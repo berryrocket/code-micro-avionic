@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./br_logo_github.png" width="30%"/>
+</p>
+
 # BerryRocket example code for BR Micro-Avionic
 
 This code is the simplest code embedded in rocket.
