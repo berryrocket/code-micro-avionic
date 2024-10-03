@@ -1,7 +1,15 @@
 # BerryRocket example code for BR Micro-Avionic
 
+This code is the simplest code embedded in rocket.
+It acquires acceleration on Y axis and starts recording when >2g (time, acceleration Y, barometer, temperature).
+The buzzer is used to indicate the state of the rocket (before flight, after take-off).
+
 ## Key Features
 
+- Work with BR Micro-Sensor or GY87 sensor board
+- Humain-readable data text file
+- Detect the take-off based on IMU (Inertial Measurement Unit)
+- Buzzer management class
 
 ## Educational Purpose
 This program is designed to serve as a foundational tool for both **classroom use** and **amateur developers** looking to explore programming concepts. It provides a basic framework that can be expanded upon, encouraging experimentation, learning, and further development about rocketry avionic.

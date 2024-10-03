@@ -52,12 +52,12 @@ while True:
     # Create one line with revelant values from sensors
     relevant_data = "Time: {:.2f} s | AccY: {:.2f} g | Baro: {:.2f} mBar | Temperature: {:.2f} dC".format(timetag, ay, pressure, temperature)
 
-    # Detection of launch is acceleration of Y axis is greater than 2 g
+    # Detection of take-off is acceleration of Y axis is greater than 2 g
     if ay > 2:
           launch_detected = True
           buzzer.set(freq=1500, period=0.5)
     
-    # Write data to file after launch
+    # Write data to file after take-off
     if launch_detected == True:
         with open('data.txt', 'a') as fp:
             fp.write(relevant_data + "\r\n")
