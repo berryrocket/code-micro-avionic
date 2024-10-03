@@ -17,4 +17,3 @@ We encourage users to:
 - **Collaborate and share**: Whether in a classroom or a hobbyist group, discussing your changes and insights helps everyone learn more effectively.
 
 By engaging with this base program, both students and amateurs can grow their understanding of programming concepts while gaining practical experience through experimentation.
-
