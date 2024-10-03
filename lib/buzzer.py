@@ -48,22 +48,28 @@ class Buzzer():
         self._enable = value
         if self._enable is False:
             self._timer_on.deinit()
-            self._off()
+            self.off()
 
-    # Management buzzer
-    def _on(self):
-        """Put on the buzzer"""
-        self._pwm_buzzer.freq(self.freq)
-        self._pwm_buzzer.duty_u16(32768) # Set to 50%
-        self._timer_off.init(freq=1.0/0.1, mode=Timer.ONE_SHOT, callback=self._off) # Ring the buzzer for 0.1s
+    def on(self, t=None, freq=None):
+        """Put on the buzzer once"""
+        if freq != None:
+            self.freq = freq
+        if self._enable is True:
+            self._pwm_buzzer.freq(self.freq)
+            self._pwm_buzzer.duty_u16(32768) # Set to 50%
+            self._timer_off.init(freq=1.0/0.1, mode=Timer.ONE_SHOT, callback=self.off) # Ring the buzzer for 0.1s
 
-    def _off(self):
+    def off(self, t=None):
         """Put off the buzzer"""
         self._pwm_buzzer.duty_u16(0) # Set to 0%
 
     def set(self, freq=500, period=5.0):
-        """Set the buzzer with a frequency and a period between ring"""
+        """Set reapeting buzzer with a frequency and a period between ring"""
         self.freq = freq
         self._timer_on.deinit()
         if self._enable is True:
-            self._timer_on.init(freq=1.0/period, mode=Timer.PERIODIC, callback=self._on)
+            self._timer_on.init(freq=1.0/period, mode=Timer.PERIODIC, callback=self.on)
+
+    def unset(self):
+        """Unset the repeat buzzer"""
+        self._timer_on.deinit()

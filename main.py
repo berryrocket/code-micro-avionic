@@ -8,19 +8,36 @@
 import time
 from machine import Pin, I2C, PWM
 
-from lib.bmp180.bmp180 import BMP180
-from lib.mpu6050.mpu6050 import *
+from lib.buzzer import Buzzer
+from lib.bmp180 import BMP180
+from lib.mpu6050 import *
+from lib.lps22hb import LPS22HB
+from lib.lsm6dsx import LSM6DSx
 
 #### Initialisation
-# I2C connection init
+# Buzzer
+buzzer = Buzzer(0)
+# I2C connection
 i2c = I2C(0, sda=Pin(4), scl=Pin(5), freq=400000)
-# Barometer init
-bmp = BMP180(i2c)
-# IMU init
-imu = MPU6050(bus=0, sda=Pin(4), scl=Pin(5), freq=400000, gyro=GYRO_FS_2000, accel=ACCEL_FS_16)
+
+### Select your version of the board (comment baro/imu accordingly)!
+## Version BR Micro-Sensor (black sensor board)
+# baro = LPS22HB(i2c) # Barometer
+# imu = LSM6DSx(i2c, 0x6B) # IMU 
+## Version GY87
+baro = BMP180(i2c) # Barometer
+imu = MPU6050(bus=0, sda=Pin(4), scl=Pin(5), freq=400000, gyro=GYRO_FS_2000, accel=ACCEL_FS_16) # IMU
 
 # Variables
 launch_detected = False
+
+# 3 bip buzzer to indicate end of initialisation
+buzzer.set(freq=800, period=0.2)
+time.sleep(0.6)
+buzzer.unset()
+
+# Set repeating buzzer to 2 seconds
+buzzer.set(freq=1000, period=2)
 
 # Infinite loop
 while True:
@@ -28,16 +45,17 @@ while True:
     timetag = time.ticks_ms()/1000.0
 
     # Read sensor values
-    pressure = bmp.pressure
-    temperature = bmp.temperature
+    pressure = baro.pressure
+    temperature = baro.temperature
     ax, ay, az, gx, gy, gz = imu.data
 
     # Create one line with revelant values from sensors
-    relevant_data = "Time: {:.2f} s | AccY: {:.2f} g | Baro: {:.2f} mBar | Temperature: {:.2f} °C".format(timetag, ay, pressure, temperature)
+    relevant_data = "Time: {:.2f} s | AccY: {:.2f} g | Baro: {:.2f} mBar | Temperature: {:.2f} dC".format(timetag, ay, pressure, temperature)
 
-    # Detection of launch is acceleration of Y axis is greater than 1.5 g
-    if ay > 1.5:
+    # Detection of launch is acceleration of Y axis is greater than 2 g
+    if ay > 2:
           launch_detected = True
+          buzzer.set(freq=1500, period=0.5)
     
     # Write data to file after launch
     if launch_detected == True:
@@ -46,3 +64,6 @@ while True:
 
     # Print data in terminal (optional, can be ommited to speed up the program)
     print(relevant_data + "\r\n")
+
+    # Slow down loop to 100ms for each cycle
+    time.sleep(0.1)
