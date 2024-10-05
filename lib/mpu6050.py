@@ -271,7 +271,7 @@ class MPU6050(__I2CHelper):
         return self.celsius * 1.8 + 32    
         
     #__> CONSTRUCTOR
-    def __init__(self, bus:int, sda, scl, ofs:tuple=None, intr=None, callback=None, angles:bool=False, clock:int=CLK_PLL_XGYRO, gyro:int=GYRO_FS_500, accel:int=ACCEL_FS_2, dlpf:int=DLPF_BW_188, rate:int=4, filtered:int=NONE, anglefilter:int=NONE, R:float=0.003, Q:float=0.001, A:float=0.8, addr:int=0x68, freq:int=400000) -> None:
+    def __init__(self, bus:int, sda, scl, calibrate=False, ofs:tuple=None, intr=None, callback=None, angles:bool=False, clock:int=CLK_PLL_XGYRO, gyro:int=GYRO_FS_500, accel:int=ACCEL_FS_2, dlpf:int=DLPF_BW_188, rate:int=4, filtered:int=NONE, anglefilter:int=NONE, R:float=0.003, Q:float=0.001, A:float=0.8, addr:int=0x68, freq:int=400000) -> None:
         super().__init__(bus, sda, scl, addr, freq)
         self.__accsense , self.__accfact , self.__accfs   = 0, 0, accel
         self.__gyrosense, self.__gyrofact, self.__gyrofs  = 0, 0, gyro
@@ -310,10 +310,11 @@ class MPU6050(__I2CHelper):
         self.__delta = utime.ticks_diff(utime.ticks_us(), self.__time)/1000000
         self.__cx, self.__cy = self.angles
         
-        if isinstance(ofs, tuple):
-            self.__set_offsets(*ofs) if (len(ofs) == 6) else self.__calibrate(6)
-        else:
-            self.__calibrate(6)
+        if calibrate is True:
+            if isinstance(ofs, tuple):
+                self.__set_offsets(*ofs) if (len(ofs) == 6) else self.__calibrate(6)
+            else:
+                self.__calibrate(6)
             
         if (not intr is None) and (not callback is None):
             self.__intr     = Pin(intr, Pin.IN, Pin.PULL_DOWN) if isinstance(intr, int) else Pin(sda)
