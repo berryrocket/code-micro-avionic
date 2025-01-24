@@ -22,11 +22,11 @@ i2c = I2C(0, sda=Pin(4), scl=Pin(5), freq=400000)
 
 ### /!\ Select your version of the board (comment baro/imu accordingly) /!\
 ## Version BR Micro-Sensor (black sensor board)
-# baro = LPS22HB(i2c) # Barometer
-# imu = LSM6DSx(i2c, 0x6B) # IMU 
+baro = LPS22HB(i2c) # Barometer
+imu = LSM6DSx(i2c, 0x6A) # IMU 
 ## Version GY87/HW290
-baro = BMP180(i2c) # Barometer
-imu = MPU6050(bus=0, sda=Pin(4), scl=Pin(5), freq=400000, gyro=GYRO_FS_2000, accel=ACCEL_FS_16) # IMU
+#baro = BMP180(i2c) # Barometer
+#imu = MPU6050(bus=0, sda=Pin(4), scl=Pin(5), freq=400000, gyro=GYRO_FS_2000, accel=ACCEL_FS_16) # IMU
 
 # Variables
 launch_detected = False
@@ -53,7 +53,7 @@ while True:
     relevant_data = "Time: {:.2f} s | AccY: {:.2f} g | Baro: {:.2f} mBar | Temperature: {:.2f} dC".format(timetag, ay, pressure, temperature)
 
     # Detection of take-off if acceleration of Y axis is greater than 2 g
-    if ay > 2 and launch_detected is False:
+    if abs(ay) > 2 and launch_detected is False:
           launch_detected = True
           buzzer.set(freq=1500, period=0.5)
           relevant_data = "Takeoff detected, start recording...\n" + relevant_data
