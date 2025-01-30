@@ -210,7 +210,7 @@ class LSM6DSx:
         return ax, ay, az
 
     def read_gyro(self):
-        gx_raw, gy_raw, gz_raw = self.read_acc_raw()
+        gx_raw, gy_raw, gz_raw = self.read_gyro_raw()
         gx = self.convert_a(gx_raw)
         gy = self.convert_a(gy_raw)
         gz = self.convert_a(gz_raw)
