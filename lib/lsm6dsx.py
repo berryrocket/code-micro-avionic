@@ -211,9 +211,9 @@ class LSM6DSx:
 
     def read_gyro(self):
         gx_raw, gy_raw, gz_raw = self.read_gyro_raw()
-        gx = self.convert_a(gx_raw)
-        gy = self.convert_a(gy_raw)
-        gz = self.convert_a(gz_raw)
+        gx = self.convert_g(gx_raw)
+        gy = self.convert_g(gy_raw)
+        gz = self.convert_g(gz_raw)
         return gx, gy, gz
     
     def read_temperature(self):
